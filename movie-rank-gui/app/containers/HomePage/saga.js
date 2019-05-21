@@ -1,6 +1,7 @@
-import { takeLatest, put } from 'redux-saga/effects';
+import { takeLatest, put, debounce, select } from 'redux-saga/effects';
 import omdb from 'omdb-client';
 import {
+  API_URL_CHANGED,
   REFRESH_RANKED_MOVIES,
   REQUEST_RANK_MOVIE,
   REQUEST_SEARCH_MOVIE,
@@ -12,13 +13,16 @@ import {
   movieRanked,
   showRankedMovies,
   refreshRankedMovies,
+  setApiErrorMessage,
 } from './actions';
 import { getRankedMovies, saveRank } from '../../utils/network';
+import { makeSelectApiUrl } from './selectors';
 
 export default function* homepageSaga() {
   yield takeLatest(REQUEST_SEARCH_MOVIE, searchMovie);
   yield takeLatest(REQUEST_RANK_MOVIE, rankMovie);
   yield takeLatest(REFRESH_RANKED_MOVIES, listRankedMovies);
+  yield debounce(1000, API_URL_CHANGED, checkApiUrl);
 }
 
 function* searchMovie({ search }) {
@@ -34,7 +38,8 @@ function* searchMovie({ search }) {
 
 function* rankMovie({ movie, rank }) {
   try {
-    const movieWithRank = yield saveRank({ ...movie, rank });
+    const apiUrl = yield select(makeSelectApiUrl());
+    const movieWithRank = yield saveRank(apiUrl,{ ...movie, rank });
     yield put(movieRanked(movieWithRank));
     yield put(refreshRankedMovies());
   } catch (ex) {
@@ -44,8 +49,20 @@ function* rankMovie({ movie, rank }) {
 
 function* listRankedMovies() {
   try {
-    const movies = yield getRankedMovies();
+    const apiUrl = yield select(makeSelectApiUrl());
+    const movies = yield getRankedMovies(apiUrl);
     yield put(showRankedMovies(movies));
+  } catch (ex) {
+    yield put(error(ex));
+  }
+}
+
+function* checkApiUrl({ url }) {
+  try {
+    const regex = /(https?:\/\/.+)(:[0-9]+)*\/?(.*)/;
+    const errorMessage = regex.test(url) ? '' : 'Invalid format';
+    yield put(setApiErrorMessage(errorMessage));
+    if (!errorMessage) yield put(refreshRankedMovies());
   } catch (ex) {
     yield put(error(ex));
   }

@@ -14,22 +14,26 @@ import { compose } from 'redux';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import { Row, Column, Container } from 'styled-bootstrap-components';
+import styled from 'styled-components';
 import makeSelectHomepage, {
+  makeSelectApiErrorMessage,
   makeSelectFoundMovies,
   makeSelectRankedMovies,
 } from './selectors';
 import reducer from './reducer';
 import saga from './saga';
-import { rankMovie, requestSearchMovie } from './actions';
+import {rankMovie, requestSearchMovie, setApiUrl} from './actions';
 import MovieItem from '../../components/MovieItem';
 import SearchBar from '../../components/SearchBar';
-import styled from "styled-components";
+import TopBar from '../../components/TopBar';
 
 export function Homepage({
   searchMovie,
   foundMovies,
   rankMovie,
   rankedMovies,
+  setApiUrl,
+  apiErrorMessage,
 }) {
   useInjectReducer({ key: 'homepage', reducer });
   useInjectSaga({ key: 'homepage', saga });
@@ -44,12 +48,17 @@ export function Homepage({
         <title>Homepage</title>
         <meta name="description" content="Description of Homepage" />
       </Helmet>
+      <TopBar
+        onChange={e => setApiUrl(e.target.value)}
+        placeholder="Your API base url"
+        errorMessage={apiErrorMessage}
+      />
       <h1>Movie Rank</h1>
       <h2>Rank the movies you love and hate</h2>
       <Row>
         <Column>
           <h3>My List</h3>
-          {rankedMovies.map(movie => (
+          {[ ...rankedMovies].reverse().map(movie => (
             <MovieItem movie={movie} onRateChange={rankMovie} />
           ))}
         </Column>
@@ -70,6 +79,7 @@ export function Homepage({
 Homepage.propTypes = {
   searchMovie: PropTypes.func.isRequired,
   rankMovie: PropTypes.func.isRequired,
+  setApiUrl: PropTypes.func.isRequired,
   foundMovies: PropTypes.array,
   rankedMovies: PropTypes.array,
 };
@@ -78,12 +88,14 @@ const mapStateToProps = createStructuredSelector({
   homepage: makeSelectHomepage(),
   foundMovies: makeSelectFoundMovies(),
   rankedMovies: makeSelectRankedMovies(),
+  apiErrorMessage: makeSelectApiErrorMessage(),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
     searchMovie: searchQuery => dispatch(requestSearchMovie(searchQuery)),
     rankMovie: e => dispatch(rankMovie(e)),
+    setApiUrl: e => dispatch(setApiUrl(e)),
   };
 }
 

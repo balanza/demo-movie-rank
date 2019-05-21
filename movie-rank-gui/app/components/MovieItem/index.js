@@ -13,7 +13,7 @@ function MovieItem({ movie, onRateChange }) {
         <h4>{movie.Year}</h4>
 
         <StarRatingComponent
-          name="rate1"
+          name={`rate-${movie.imdbID}`}
           starCount={5}
           value={movie.rank}
           onStarClick={rank => onRateChange({ movie, rank })}

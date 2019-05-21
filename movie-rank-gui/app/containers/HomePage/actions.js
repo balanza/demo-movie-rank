@@ -5,7 +5,7 @@ import {
   REQUEST_RANK_MOVIE,
   MOVIE_RANKED,
   SHOW_RANKED_MOVIES,
-  REFRESH_RANKED_MOVIES,
+  REFRESH_RANKED_MOVIES, API_URL_CHANGED, ERROR_INVALID_API_URL,
 } from './constants';
 
 export function requestSearchMovie(search) {
@@ -30,7 +30,7 @@ export function rankMovie({ movie, rank }) {
   };
 }
 
-export function movieRanked({ movie }) {
+export function movieRanked(movie) {
   return {
     type: MOVIE_RANKED,
     movie,
@@ -54,5 +54,19 @@ export function error(exception) {
   return {
     type: ERROR,
     exception,
+  };
+}
+
+export function setApiUrl(url) {
+  return {
+    type: API_URL_CHANGED,
+    url,
+  };
+}
+
+export function setApiErrorMessage(message) {
+  return {
+    type: ERROR_INVALID_API_URL,
+    message,
   };
 }

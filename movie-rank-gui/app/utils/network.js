@@ -1,8 +1,6 @@
-import { API_URL } from './constants';
-
-const get = url => fetch(`${API_URL}${url}`).then(res => res.json());
+const get = url => fetch(url).then(res => res.json());
 const post = (url, data) =>
-  fetch(`${API_URL}${url}`, {
+  fetch(url, {
     method: 'POST',
     body: JSON.stringify(data),
     headers: {
@@ -10,5 +8,5 @@ const post = (url, data) =>
     },
   }).then(res => res.json());
 
-export const getRankedMovies = () => get('/');
-export const saveRank = movie => post('/', movie);
+export const getRankedMovies = apiUrl => get(`${apiUrl}/`);
+export const saveRank = (apiUrl, movie) => post(`${apiUrl}/`, movie);

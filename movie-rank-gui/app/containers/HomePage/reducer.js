@@ -4,7 +4,14 @@
  *
  */
 import produce from 'immer';
-import {MOVIE_RANKED, MOVIE_SEARCH_RESULT, REQUEST_SEARCH_MOVIE, SHOW_RANKED_MOVIES} from './constants';
+import {
+  API_URL_CHANGED,
+  ERROR_INVALID_API_URL,
+  MOVIE_RANKED,
+  MOVIE_SEARCH_RESULT,
+  REQUEST_SEARCH_MOVIE,
+  SHOW_RANKED_MOVIES
+} from './constants';
 
 export const initialState = {
   rankedMovies: [],
@@ -27,6 +34,12 @@ const homepageReducer = (state = initialState, action) =>
         break;
       case SHOW_RANKED_MOVIES:
         draft.rankedMovies = payload.movies;
+        break;
+      case ERROR_INVALID_API_URL:
+        draft.apiErrorMessage = payload.message;
+        break;
+      case API_URL_CHANGED:
+        draft.apiUrl = payload.url;
         break;
     }
   });

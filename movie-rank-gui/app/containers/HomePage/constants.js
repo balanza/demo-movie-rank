@@ -10,4 +10,7 @@ export const MOVIE_REMOVED = Symbol('MOVIE_REMOVED');
 export const REFRESH_RANKED_MOVIES = Symbol('REFRESH_RANKED_MOVIES');
 export const SHOW_RANKED_MOVIES = Symbol('SHOW_RANKED_MOVIES');
 
+export const API_URL_CHANGED = Symbol('API_URL_CHANGED');
+
+export const ERROR_INVALID_API_URL = Symbol('ERROR_INVALID_API_URL');
 export const ERROR = Symbol('ERROR');
