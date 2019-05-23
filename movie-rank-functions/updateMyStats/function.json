@@ -1,0 +1,33 @@
+{
+  "bindings": [
+    {
+      "type": "cosmosDBTrigger",
+      "name": "documents",
+      "direction": "in",
+      "leaseCollectionName": "leases",
+      "connectionStringSetting": "movierank_DOCUMENTDB",
+      "databaseName": "movies",
+      "collectionName": "ranked-movies",
+      "createLeaseCollectionIfNotExists": true
+    },
+    {
+      "type": "cosmosDB",
+      "name": "myStats",
+      "id": "my-stats",
+      "databaseName": "movies",
+      "collectionName": "stats",
+      "createIfNotExists": true,
+      "connectionStringSetting": "movierank_DOCUMENTDB",
+      "direction": "in"
+    },
+    {
+      "type": "cosmosDB",
+      "name": "$return",
+      "databaseName": "movies",
+      "collectionName": "stats",
+      "createIfNotExists": true,
+      "connectionStringSetting": "movierank_DOCUMENTDB",
+      "direction": "out"
+    }
+  ]
+}

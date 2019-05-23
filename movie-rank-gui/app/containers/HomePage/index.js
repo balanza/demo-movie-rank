@@ -19,13 +19,15 @@ import makeSelectHomepage, {
   makeSelectApiErrorMessage,
   makeSelectFoundMovies,
   makeSelectRankedMovies,
+  makeSelectStats,
 } from './selectors';
 import reducer from './reducer';
 import saga from './saga';
-import {rankMovie, requestSearchMovie, setApiUrl} from './actions';
+import { rankMovie, requestSearchMovie, setApiUrl } from './actions';
 import MovieItem from '../../components/MovieItem';
 import SearchBar from '../../components/SearchBar';
 import TopBar from '../../components/TopBar';
+import StatsBar from '../../components/StatsBar';
 
 export function Homepage({
   searchMovie,
@@ -34,6 +36,7 @@ export function Homepage({
   rankedMovies,
   setApiUrl,
   apiErrorMessage,
+  stats,
 }) {
   useInjectReducer({ key: 'homepage', reducer });
   useInjectSaga({ key: 'homepage', saga });
@@ -55,10 +58,11 @@ export function Homepage({
       />
       <h1>Movie Rank</h1>
       <h2>Rank the movies you love and hate</h2>
+      <StatsBar stats={stats} />
       <Row>
         <Column>
           <h3>My List</h3>
-          {[ ...rankedMovies].reverse().map(movie => (
+          {[...rankedMovies].reverse().map(movie => (
             <MovieItem movie={movie} onRateChange={rankMovie} />
           ))}
         </Column>
@@ -82,6 +86,7 @@ Homepage.propTypes = {
   setApiUrl: PropTypes.func.isRequired,
   foundMovies: PropTypes.array,
   rankedMovies: PropTypes.array,
+  stats: PropTypes.object,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -89,6 +94,7 @@ const mapStateToProps = createStructuredSelector({
   foundMovies: makeSelectFoundMovies(),
   rankedMovies: makeSelectRankedMovies(),
   apiErrorMessage: makeSelectApiErrorMessage(),
+  stats: makeSelectStats(),
 });
 
 function mapDispatchToProps(dispatch) {

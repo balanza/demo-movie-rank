@@ -1,6 +1,9 @@
-const { formatMovieItem } = require('./model');
+const { formatMovieItem, formatStats } = require('./model');
 
-module.exports = ({ container, client }) => {
+module.exports = ({ containers, client }) => {
+
+  const rankedMovies = containers['ranked-movies'];
+  const stats = containers['stats'];
 
   const getMovieList = async (req, res) => {
     const querySpec = {
@@ -10,7 +13,7 @@ module.exports = ({ container, client }) => {
       ]
     };
 
-    const { result: results } = await container.items
+    const { result: results } = await rankedMovies.items
       .query(querySpec)
       .toArray();
 
@@ -19,8 +22,7 @@ module.exports = ({ container, client }) => {
 
   const saveMovieRank = async (req, res) => {
     const movie = req.body;
-    console.log('***', movie)
-    const { body: doc } = await container.items.upsert({
+    const { body: doc } = await rankedMovies.items.upsert({
       id: `${movie.imdbID}`,
       completed: false,
       ...movie
@@ -28,16 +30,16 @@ module.exports = ({ container, client }) => {
     res.status(200).send(formatMovieItem(doc));
   };
 
-  const removeMovieRank = async (req, res) => {
-    const { id } = req.params;
-    const result = await container
-      .item({ url: 'https://azureday-movie-rank.documents.azure.com/dbs/movies/colls/ranked-movies/docs/42'})
-      .delete()
+  const getMyStats = async (req, res) => {
+    const { result } = await stats.items.readAll()
+      .toArray();
 
-    res.status(200).send(result);
+    const myStats = result
+      .filter(({id})=>id==='my-stats')
+      .map(formatStats)[0];
+
+    res.status(200).send(myStats);
   };
 
-  return { getMovieList, saveMovieRank, removeMovieRank };
+  return { getMovieList, saveMovieRank, getMyStats };
 };
-
-const url = () => `https://azureday-movie-rank.documents.azure.com/dbs/movies/colls/ranked-movies/docs/42`

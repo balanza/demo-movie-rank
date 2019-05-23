@@ -8,10 +8,10 @@ const start = async ({ port, db }) => {
   app.use(bodyParser.json());
   app.use(cors());
 
-  const { getMovieList, saveMovieRank, removeMovieRank } = createController(db);
+  const { getMovieList, saveMovieRank, getMyStats } = createController(db);
   app.get('/', (req, res, next) => getMovieList(req, res).catch(next));
   app.post('/', (req, res, next) => saveMovieRank(req, res).catch(next));
-  app.delete('/:id', (req, res, next) => removeMovieRank(req, res).catch(next));
+  app.get('/my-stats', (req, res, next) => getMyStats(req, res).catch(next));
 
   app.use((req, res, next) => {
     const err = new Error("Not Found");

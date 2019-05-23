@@ -4,4 +4,11 @@ const formatMovieItem = (movie) => {
     .reduce((o, [key, value]) => ({...o, [key]: value}), {})
 };
 
-module.exports = { formatMovieItem };
+const formatStats = (stats) => {
+  return Object.entries(stats)
+    .filter(([key]) => !key.startsWith('_'))
+    .filter(([key]) => key !== 'id')
+    .reduce((o, [key, value]) => ({...o, [key]: value}), {})
+};
+
+module.exports = { formatMovieItem, formatStats };

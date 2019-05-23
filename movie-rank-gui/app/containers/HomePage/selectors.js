@@ -45,5 +45,11 @@ const makeSelectApiUrl = () =>
     substate => substate.apiUrl,
   );
 
+const makeSelectStats = () =>
+  createSelector(
+    selectHomepageDomain,
+    substate => substate.stats,
+  );
+
 export default makeSelectHomepage;
-export { selectHomepageDomain, makeSelectFoundMovies, makeSelectRankedMovies, makeSelectApiErrorMessage, makeSelectApiUrl };
+export { selectHomepageDomain, makeSelectFoundMovies, makeSelectRankedMovies, makeSelectApiErrorMessage, makeSelectApiUrl, makeSelectStats };
